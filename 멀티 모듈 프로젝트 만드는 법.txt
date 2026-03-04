@@ -1,0 +1,13 @@
+
+
+1. 메인 프로젝트 생성
+
+2. 프로젝트에 모듈 추가
+    메인 프로젝트 우클릭 -> New -> Module
+
+3. 모듈 프로젝트는 src, build.gradle 빼고 전부 삭제
+
+4. 메인 프로젝트의 settings.gradle 파일에 모듈 추가
+    include '모듈프로젝트이름'
+
+5. gradle 설정에서 모듈 프로젝트는 -로 삭제 후 gradle 새로고침
