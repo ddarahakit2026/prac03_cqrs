@@ -33,7 +33,12 @@ spring:
               uri: lb://board-query
               predicates:
                 - Path=/board/list, /board/read/**
-
+            - id: reply_command
+              uri: lb://reply-command
+              predicates:
+                - Path=/reply/reg/**
+              filters:
+                - JwtFilter
             - id: origin
               uri: http://localhost:8083
               predicates:

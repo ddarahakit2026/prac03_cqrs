@@ -1,0 +1,44 @@
+server:
+  port: 8084
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 10     # ??? ???? ??
+    lease-expiration-duration-in-seconds: 30  # ??? ??? ?? ??
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:9090/eureka
+    register-with-eureka: true  # ?? ??? IP??? ???? ??
+    fetch-registry: true        # ???? ??? ???? ???? ?
+
+
+spring:
+  application:
+    name: reply-command
+  kafka:
+    bootstrap-servers: 10.10.10.100:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.example.reply_command: debug
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+
+
