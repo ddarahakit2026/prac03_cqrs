@@ -2,15 +2,44 @@ package com.example.board_query.api;
 
 import com.example.board_query.api.model.Board;
 import com.example.board_query.api.model.BoardDto;
+import com.example.board_query.api.model.BoardEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
+
+//    BFF			여러 서비스로 데이터를 가져와서 통합시켜서 응답을 주는 백엔드를 하나 더 만드는 방식
+//                  데이터 정합성이 중요할 때
+//    카프카 캐싱		이벤트가 발생했을 때 해당 데이터가 필요한 특정 서비스들이 자기 서버에 직접 저장해두는 방식
+//                  정합성보다는 속도가 중요할 때
+//    프론트 병렬		프론트엔드에서 필요한 서비스들을 각각 호출하는 방식
+//                  부하를 클라이언트에게 전가하기
+//    GraphQL		일반적인 HTTP 요청이 아닌 GraphQL이라는 형식으로 데이터를 요청하고 응답하는 방식
+//                  조합해야하는 서비스가 많을 때
+
+    // 카프카로부터 메시지를 받아서 DB에 데이터 저장
+    @KafkaListener(topics = "board", groupId = "board-group-1",
+            // 내가 받는 Dto의 타입이 어떤 타입인지 지정
+            properties = "spring.json.value.default.type:com.example.board_query.api.model.BoardEvent.Create")
+    public void consume(
+            @Header(KafkaHeaders.RECEIVED_KEY) Long key,
+            @Payload BoardEvent.Create event
+    ) {
+        log.debug("MessageConsumer - consume : {}={}", key, event.toString());
+
+        boardRepository.save(event.toEntity());
+    }
 
     public BoardDto.PageRes list(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);

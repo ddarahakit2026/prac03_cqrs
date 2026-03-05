@@ -17,6 +17,7 @@ dependencyManagement {
 dependencies {
     implementation project(':board_core')
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.kafka:spring-kafka'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 
