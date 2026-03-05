@@ -7,3 +7,4 @@ include 'board_query'
 include 'gateway'
 
 include 'discovery'
+include 'reply_command'
