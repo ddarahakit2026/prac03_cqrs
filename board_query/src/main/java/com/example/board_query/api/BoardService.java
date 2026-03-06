@@ -3,6 +3,7 @@ package com.example.board_query.api;
 import com.example.board_query.api.model.Board;
 import com.example.board_query.api.model.BoardDto;
 import com.example.board_query.api.model.BoardEvent;
+import com.example.board_query.api.model.ReplyEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,23 @@ public class BoardService {
 
         boardRepository.save(event.toEntity());
     }
+
+
+    @KafkaListener(topics = "reply", groupId = "reply-group-2",
+            // 내가 받는 Dto의 타입이 어떤 타입인지 지정
+            properties = "spring.json.value.default.type:com.example.board_query.api.model.ReplyEvent.Create")
+    public void consume(
+            @Header(KafkaHeaders.RECEIVED_KEY) Long key,
+            @Payload ReplyEvent.Create event
+    ) {
+        log.debug("MessageConsumer - consume : {}={}", key, event.toString());
+
+        Board board = boardRepository.findById(event.getBoardIdx()).orElseThrow();
+        board.setLatestReplyContents(event.getContents());
+        boardRepository.save(board);
+    }
+
+
 
     public BoardDto.PageRes list(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
