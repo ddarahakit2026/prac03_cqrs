@@ -8,3 +8,4 @@ include 'gateway'
 
 include 'discovery'
 include 'reply_command'
+include 'reply_query'

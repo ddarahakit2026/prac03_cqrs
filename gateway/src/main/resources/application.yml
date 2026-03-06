@@ -39,6 +39,10 @@ spring:
                 - Path=/reply/reg/**
               filters:
                 - JwtFilter
+            - id: reply_query
+              uri: lb://reply-query
+              predicates:
+                - Path=/reply/list, /reply/read/**
             - id: origin
               uri: http://localhost:8083
               predicates:

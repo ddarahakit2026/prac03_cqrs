@@ -3,10 +3,7 @@ package com.example.board_query.api.model;
 
 import com.example.board_query.api.model.BoardDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Getter
@@ -21,6 +18,9 @@ public class Board {
     @Column(nullable=false, length = 100)
     private String title;
     private String contents;
+
+    @Setter
+    private String latestReplyContents;
 
     Long userIdx;
     String userName;
